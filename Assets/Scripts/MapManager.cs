@@ -5,7 +5,7 @@ using UnityEngine;
 public class MapManager : MonoBehaviour
 {
     public static MapManager manager = null;
-    public void Awake()
+    public void Awake() //Singietone Pattern
     {
         if (manager == null)
         {
@@ -16,11 +16,10 @@ public class MapManager : MonoBehaviour
             Destroy(this.gameObject);
             Destroy(this);
         }
-        //DontDestroyOnLoad(this); 
+        DontDestroyOnLoad(this); 
     }
-    
-    public GameObject targetPrefab; //This is variable for Test ver. Delete this after UI Scene is completed. 
-
+    //This is variable for Test ver. Delete this after UI Scene is completed. 
+    public GameObject targetPrefab; 
     GameObject map;
 
     void Start()
@@ -29,8 +28,11 @@ public class MapManager : MonoBehaviour
     }
 
     void Init(){
+        //Instantiate target Map.
         map=Instantiate(targetPrefab);
+        //Delete this when using ARCore
         Camera.main.transform.position=map.transform.position+15*Vector3.up;
+        //Give CharacterManager references(player, endpoint, etc.) from Mapfile targeted.
         CharacterManager.manager.MapSet(map.GetComponent<Mapfile>().player);
     }
 }

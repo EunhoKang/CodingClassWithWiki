@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
 {
+    //This script manages ONLY player's character.
+    //And Commands player can order also can control ONLY player's character.
+
     public static CharacterManager manager = null;
-    public void Awake()
+    public void Awake() //Singletone Pattern
     {
         if (manager == null)
         {
@@ -16,15 +19,15 @@ public class CharacterManager : MonoBehaviour
             Destroy(this.gameObject);
             Destroy(this);
         }
-        //DontDestroyOnLoad(this); 
+        DontDestroyOnLoad(this);
         DictionarySet();
     }
-
+    //delegate for void,void
     [HideInInspector]public delegate void Command();
-    [HideInInspector]public Command s;
+    //Gather all commands in here
     [HideInInspector]public Dictionary<string,Command> commandFinder;
-    
-    public void DictionarySet(){//Update New Commands Here
+    //Update new commands below here
+    public void DictionarySet(){
         commandFinder=new Dictionary<string, Command>();
         Command temp;
         temp=new Command(MoveLeft);
@@ -37,7 +40,8 @@ public class CharacterManager : MonoBehaviour
         commandFinder.Add("MoveDown",temp);
     }
 
-    //Commands
+    //Commands. This is actions that character can do
+    //Write all commands below here
     void MoveLeft(){
         StartCoroutine(MovingCoroutine(player.transform.position+pxPerTile*Vector3.left));
     }
@@ -59,17 +63,21 @@ public class CharacterManager : MonoBehaviour
     }
 
 
-    //CharacterMoves
+    //multiplier for moving
     public int pxPerTile;
+    //player in Map
     [HideInInspector] public GameObject player;
+    //show whether character is moving or not
     [HideInInspector] public bool isMoving=false;
+    //place where player start moving. Use this for reset player's transform
     [HideInInspector] public Vector3 startingPlace;
+    //show whether stage is ended
     bool isStageEnd=true;
     Rigidbody rb;
-
     WaitForSeconds commandDelay=new WaitForSeconds(0.6f);
     WaitForSeconds moveDelay=new WaitForSeconds(0.015f);
-    
+
+    //Set Mapfile's references
     public void MapSet(GameObject target){
         player=target;
         rb=player.GetComponent<Rigidbody>();
@@ -77,33 +85,40 @@ public class CharacterManager : MonoBehaviour
         isStageEnd=false;
     }
 
-    public void PlayerMove(List<CommandNode> queue){
+    //Recieve the Command Queue to Coroutine.
+    public void PlayerMove(List<string> queue,Command c){
         if(!isStageEnd){
             isMoving=true;
-            IEnumerator Temp=Move(queue);
+            IEnumerator Temp=Move(queue,c);
             StartCoroutine(Temp);
         }
     }
 
-    IEnumerator Move(List<CommandNode> queue){
+    //execute Commands in order, one by one.
+    IEnumerator Move(List<string> queue,Command c){
         for(int i=0;i<queue.Count;i++){
-            Command temp=commandFinder[queue[i].GetName()];
+            //Search the function matches with given string
+            Command temp=commandFinder[queue[i]];
+            //Execute
             temp();
 
             yield return commandDelay;
         }
-        yield return commandDelay;
-        //This didn't guarantee the complete end of all of moves. Change 3 lines of codes below this if you have some problems with it.
-        isMoving=false;
+        yield return commandDelay; 
+        //Change 3 lines of codes below if you have some problems with it.
+        //This didn't guarantee the complete end of all of moves.
         if(!isStageEnd){
-            player.transform.position=startingPlace;
+            ResetPlace();
+            //If all of command is finished, message that to IngameUI
+            c();
         }
     }
-
+    //If stage is finished, message that to IngameUI (Yet!)
     public void EndStage(){
         isStageEnd=true;
         Debug.Log("finish!");
     }
+    //Reset player's position & rotation
     public void ResetPlace(){
         StopAllCoroutines();
         isMoving=false;
