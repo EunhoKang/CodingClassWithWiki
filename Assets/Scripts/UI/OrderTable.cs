@@ -4,9 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class OrderTable : MonoBehaviour, IDropHandler
+public class OrderTable : MonoBehaviour
 {
     public GameObject Content;
+    public RectTransform MoveUp;
+    public RectTransform MoveDown;
+    public float moveSpeed=5;
     public Transform invisible;
     List<GameObject> Queue;
     RectTransform tablePos;
@@ -16,27 +19,38 @@ public class OrderTable : MonoBehaviour, IDropHandler
         tablePos=Content.transform as RectTransform;
         UpdateQueue();
     }
-    public void OnDrop(PointerEventData eventData)
+    public void WhenDrop(DragNDrop d)
     {
-        if(DragNDrop.itemDragged!=null){
-            DragNDrop temp=Instantiate(DragNDrop.itemDragged) as DragNDrop;
+        SwapCard(invisible,d.transform);
+        if(d!=null && !d.isInvisible){
+            DragNDrop temp=Instantiate(d) as DragNDrop;
             RectTransform tempPos=temp.transform as RectTransform;
-            temp.gameObject.GetComponent<CanvasGroup>().blocksRaycasts=true;
-            temp.gameObject.GetComponent<Image>().raycastTarget = true;
-            
-            if(!DragNDrop.itemDragged.isAlreadySpawned){
-                temp.isAlreadySpawned=true;
-                temp.transform.SetParent(Content.transform);
-                temp.indexInTable=temp.transform.GetSiblingIndex();
-                UpdateQueue();
-                if(Queue.Count%5==0){
-                    tablePos.sizeDelta=new Vector2(tablePos.sizeDelta.x,tablePos.sizeDelta.y+1000);
+            if(!d.isAlreadySpawned){
+                if(d.isOnTable){
+                    temp.isAlreadySpawned=true;
+                    temp.transform.SetParent(Content.transform);
+                    temp.indexInTable=temp.transform.GetSiblingIndex();
+                    UpdateQueue();
+                    if(Queue.Count%5==0){
+                        tablePos.sizeDelta=new Vector2(tablePos.sizeDelta.x,tablePos.sizeDelta.y+1000);
+                    }
+                }else{
+                    temp.transform.SetParent(null);
+                    Destroy(temp.gameObject);
                 }
             }
-            else{
-                temp.transform.SetParent(Content.transform);
-                if(temp.indexInTable>=0){
-                    temp.transform.SetSiblingIndex(temp.indexInTable);
+            else {
+                if(d.isOnTable){
+                    d.transform.SetParent(Content.transform);
+                    if(d.indexInTable>=0){
+                        d.transform.SetSiblingIndex(d.indexInTable);
+                    }
+                }
+                else{
+                    temp.transform.SetParent(null);
+                    Destroy(temp.gameObject);
+                    d.transform.SetParent(null);
+                    Destroy(d.gameObject);
                 }
             }
             temp.transform.localScale=new Vector3(1,1,1);
@@ -52,7 +66,9 @@ public class OrderTable : MonoBehaviour, IDropHandler
             GameObject child=Content.transform.GetChild(i).gameObject;
             if(child!=Queue[i]){
                 Queue[i]=child;
-                Queue[i].GetComponent<DragNDrop>().indexInTable=i;
+                DragNDrop tp=Queue[i].GetComponent<DragNDrop>();
+                if(!tp.isInvisible)
+                    Queue[i].GetComponent<DragNDrop>().indexInTable=i;
             }
         }
         Queue.RemoveRange(Content.transform.childCount,Queue.Count-Content.transform.childCount);
@@ -89,5 +105,25 @@ public class OrderTable : MonoBehaviour, IDropHandler
         b.SetSiblingIndex(aindex);
         UpdateQueue();
     }
+    /*
+    public void MoveContent(){
+        Debug.Log(1);
+        RectTransform tableMax=this.transform as RectTransform;
+        RectTransform TT=Content.transform as RectTransform;
+        if(DragNDrop.itemDragged==null){
+            return;
+        }
+
+        if(0<TT.anchoredPosition.y && TT.anchoredPosition.y<TT.sizeDelta.y){
+            if(ContainPos(MoveUp,DragNDrop.itemDragged.transform.position)){
+                Debug.Log(1);
+                TT.anchoredPosition+=Vector2.up*moveSpeed;
+            }else if(ContainPos(MoveDown,DragNDrop.itemDragged.transform.position)){
+                Debug.Log(2);
+                TT.anchoredPosition+=Vector2.down*moveSpeed;
+            }
+        }
+    }
+    */
     
 }

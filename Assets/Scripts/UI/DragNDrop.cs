@@ -13,8 +13,10 @@ public class DragNDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
     [HideInInspector]public Vector3 root;
     [HideInInspector]public Vector3 diff;
     [HideInInspector]public Transform startParent;
+    [HideInInspector]public bool isOnTable=false;
     /*[HideInInspector]*/public bool isAlreadySpawned=false;
     /*[HideInInspector]*/public int indexInTable=-1;
+    public bool isInvisible=false;
     public string commandName;
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -33,26 +35,26 @@ public class DragNDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
         transform.position=Input.mousePosition+diff;
         int invisibleIndex=table.invisible.transform.GetSiblingIndex();
         int targetIndex=table.GetIndex(itemDragged.transform,table.invisible.transform.GetSiblingIndex());
-        if(isAlreadySpawned && table.ContainPos(table.transform as RectTransform,itemDragged.transform.position) && invisibleIndex!=targetIndex){
-            table.SwapCardByIndex(invisibleIndex,targetIndex);
-            indexInTable=targetIndex;
+        if(table.ContainPos(table.transform as RectTransform,itemDragged.transform.position)){
+            if(isAlreadySpawned && invisibleIndex!=targetIndex){
+                table.SwapCardByIndex(invisibleIndex,targetIndex);
+                indexInTable=targetIndex;
+            }
+            isOnTable=true;
+        }else{
+            isOnTable=false;
         }
+        //table.MoveContent();
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        table.SwapCard(table.invisible,transform);
-        //table.invisible.position=new Vector3(0,0,0);
-        if(isAlreadySpawned){
-            transform.SetParent(null);
-            Destroy(this.gameObject);
-        }
-        else{
-            transform.position=root;
-        }
+        //table.SwapCard(table.invisible,transform);
+        transform.position=root;
         GetComponent<CanvasGroup>().blocksRaycasts=true;
         GetComponent<Image>().raycastTarget = true;
-        transform.localScale=Vector3.one;
+
+        table.WhenDrop(this);
         itemDragged=null;
     }
 }

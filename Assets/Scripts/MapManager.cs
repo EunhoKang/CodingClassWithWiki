@@ -16,7 +16,7 @@ public class MapManager : MonoBehaviour
             Destroy(this.gameObject);
             Destroy(this);
         }
-        DontDestroyOnLoad(this); 
+        DontDestroyOnLoad(this);
     }
     //This is variable for Test ver. Delete this after UI Scene is completed. 
     [HideInInspector]public Mapfile stagefile;

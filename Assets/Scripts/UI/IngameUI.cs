@@ -5,10 +5,12 @@ using UnityEngine.UI;
 
 public class IngameUI : MonoBehaviour
 {
-    //public List<Image> imageFrame;
-    //public List<Sprite> commandImages;
     public OrderTable orderTable;
+    public GameObject Commands;
+    public RectTransform spot1;
+    public RectTransform spot2;
     List<string> Queue=new List<string>();
+    bool commandOpen=false;
 
     public void SendQueue(){//it will take some time because of GetComponent(Maybe?)
         if(CharacterManager.manager.isMoving){
@@ -31,7 +33,24 @@ public class IngameUI : MonoBehaviour
         CharacterManager.manager.ResetPlace();
     }
 
-    public void GameEnd(){
-        //
+    private bool isMoving=false;
+    public void BackToLobby(){
+        if(!isMoving){
+            if(commandOpen){
+                StartCoroutine(CommandsMove(spot2.position,spot1.position));
+            }else{
+                StartCoroutine(CommandsMove(spot1.position,spot2.position));
+            }
+            commandOpen=!commandOpen;
+        }
+    }
+
+    IEnumerator CommandsMove(Vector3 a,Vector3 b){
+        isMoving=true;
+        for(float i=0;i<=1;i+=0.02f){
+            Commands.transform.position=Vector3.Lerp(a,b,i*i);
+            yield return new WaitForSeconds(0.005f);
+        }
+        isMoving=false;
     }
 }
