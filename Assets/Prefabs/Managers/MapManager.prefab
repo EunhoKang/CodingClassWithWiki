@@ -43,5 +43,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01a804627698574b83700b113a8a719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetPrefab: {fileID: 6362927104032990388, guid: 91512e4c1c7cab2418eab44f0c614a04,
-    type: 3}
+  stagefile: {fileID: 0}
+  mapName: DemoMap

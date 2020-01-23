@@ -8,6 +8,7 @@ public class DragNDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
 {
     
     public static DragNDrop itemDragged;
+    public OrderTable table;
     [HideInInspector]public Vector3 root;
     [HideInInspector]public Vector3 diff;
     [HideInInspector]public Transform startParent;
@@ -20,6 +21,8 @@ public class DragNDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
         diff=gameObject.transform.position-Input.mousePosition;
         startParent=transform.parent;
         root=transform.position;
+        table.SwapCard(table.invisible,transform);
+        
         GetComponent<CanvasGroup>().blocksRaycasts=false;
         GetComponent<Image>().raycastTarget = false;
     }
@@ -27,12 +30,17 @@ public class DragNDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
     public void OnDrag(PointerEventData eventData)
     {
         transform.position=Input.mousePosition+diff;
+        if(table.ContainPos(table.transform as RectTransform,itemDragged.transform.position)){
+            Debug.Log(table.GetIndex(itemDragged.transform,table.invisible.transform.GetSiblingIndex()));
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        table.SwapCard(table.invisible,transform);
+        table.invisible.position=new Vector3(0,0,0);
         if(isAlreadySpawned){
-            transform.parent=null;
+            transform.SetParent(null);
             Destroy(this.gameObject);
         }
         else{
@@ -40,6 +48,7 @@ public class DragNDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
         }
         GetComponent<CanvasGroup>().blocksRaycasts=true;
         GetComponent<Image>().raycastTarget = true;
+        transform.localScale=Vector3.one;
         itemDragged=null;
     }
 }

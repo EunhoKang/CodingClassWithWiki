@@ -19,20 +19,42 @@ public class MapManager : MonoBehaviour
         DontDestroyOnLoad(this); 
     }
     //This is variable for Test ver. Delete this after UI Scene is completed. 
-    public GameObject targetPrefab; 
-    GameObject map;
-
+    [HideInInspector]public Mapfile stagefile;
+    public string mapName;
+    private Transform mapHolder;
     void Start()
     {
         Init();
     }
 
-    void Init(){
-        //Instantiate target Map.
-        map=Instantiate(targetPrefab);
-        //Delete this when using ARCore
-        Camera.main.transform.position=map.transform.position+15*Vector3.up;
-        //Give CharacterManager references(player, endpoint, etc.) from Mapfile targeted.
-        CharacterManager.manager.MapSet(map.GetComponent<Mapfile>().player);
+    void Init(){//추후 csv방식으로 바꿀 것
+        stagefile=(Resources.Load(mapName) as GameObject).GetComponent<Mapfile>();
+        List<customArray> grid=stagefile.map;
+        List<GameObject> array=stagefile.filePrefabs;
+        Vector3 pointer=Vector3.zero;
+        mapHolder=new GameObject("holder").transform;
+        GameObject temp;
+        for(int i=-1;i<=grid.Count;i++){
+            for(int j=-1;j<=grid.Count;j++){
+                temp=Instantiate(array[0],pointer,Quaternion.identity);
+                temp.transform.SetParent(mapHolder);
+                if(i==-1 || j==-1 || i==grid.Count || j==grid.Count){
+                    temp=Instantiate(array[1],pointer+stagefile.gridLength*Vector3.up,Quaternion.identity);
+                    temp.transform.SetParent(mapHolder);
+                }
+                else if(grid[i].data[j]>0){
+                    temp=Instantiate(array[grid[i].data[j]],pointer+stagefile.gridLength*Vector3.up,Quaternion.identity);
+                    temp.transform.SetParent(mapHolder);
+                    if(grid[i].data[j]==2){
+                        CharacterManager.manager.MapSet(temp);
+                    }
+                }
+                pointer+=stagefile.gridLength*Vector3.right;
+            }
+            pointer.x=0;
+            pointer+=stagefile.gridLength*Vector3.forward;
+        }
+
+        //CharacterManager.manager.MapSet(stagefile.GetComponent<Mapfile>().player);
     }
 }
