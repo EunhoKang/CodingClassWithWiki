@@ -9,11 +9,12 @@ public class DragNDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
     
     public static DragNDrop itemDragged;
     public OrderTable table;
+    /*[HideInInspector]*/
     [HideInInspector]public Vector3 root;
     [HideInInspector]public Vector3 diff;
     [HideInInspector]public Transform startParent;
-    [HideInInspector]public bool isAlreadySpawned=false;
-    [HideInInspector]public int indexInTable=-1;
+    /*[HideInInspector]*/public bool isAlreadySpawned=false;
+    /*[HideInInspector]*/public int indexInTable=-1;
     public string commandName;
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -30,15 +31,18 @@ public class DragNDrop : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
     public void OnDrag(PointerEventData eventData)
     {
         transform.position=Input.mousePosition+diff;
-        if(table.ContainPos(table.transform as RectTransform,itemDragged.transform.position)){
-            Debug.Log(table.GetIndex(itemDragged.transform,table.invisible.transform.GetSiblingIndex()));
+        int invisibleIndex=table.invisible.transform.GetSiblingIndex();
+        int targetIndex=table.GetIndex(itemDragged.transform,table.invisible.transform.GetSiblingIndex());
+        if(isAlreadySpawned && table.ContainPos(table.transform as RectTransform,itemDragged.transform.position) && invisibleIndex!=targetIndex){
+            table.SwapCardByIndex(invisibleIndex,targetIndex);
+            indexInTable=targetIndex;
         }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         table.SwapCard(table.invisible,transform);
-        table.invisible.position=new Vector3(0,0,0);
+        //table.invisible.position=new Vector3(0,0,0);
         if(isAlreadySpawned){
             transform.SetParent(null);
             Destroy(this.gameObject);

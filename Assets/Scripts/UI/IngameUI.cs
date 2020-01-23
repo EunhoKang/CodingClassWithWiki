@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class IngameUI : MonoBehaviour
 {
-    public List<Image> imageFrame;
-    public List<Sprite> commandImages;
+    //public List<Image> imageFrame;
+    //public List<Sprite> commandImages;
     public OrderTable orderTable;
     List<string> Queue=new List<string>();
 

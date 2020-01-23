@@ -27,7 +27,7 @@ public class OrderTable : MonoBehaviour, IDropHandler
             if(!DragNDrop.itemDragged.isAlreadySpawned){
                 temp.isAlreadySpawned=true;
                 temp.transform.SetParent(Content.transform);
-                Debug.Log(Input.mousePosition);
+                temp.indexInTable=temp.transform.GetSiblingIndex();
                 UpdateQueue();
                 if(Queue.Count%5==0){
                     tablePos.sizeDelta=new Vector2(tablePos.sizeDelta.x,tablePos.sizeDelta.y+1000);
@@ -35,6 +35,9 @@ public class OrderTable : MonoBehaviour, IDropHandler
             }
             else{
                 temp.transform.SetParent(Content.transform);
+                if(temp.indexInTable>=0){
+                    temp.transform.SetSiblingIndex(temp.indexInTable);
+                }
             }
             temp.transform.localScale=new Vector3(1,1,1);
         }
@@ -49,6 +52,7 @@ public class OrderTable : MonoBehaviour, IDropHandler
             GameObject child=Content.transform.GetChild(i).gameObject;
             if(child!=Queue[i]){
                 Queue[i]=child;
+                Queue[i].GetComponent<DragNDrop>().indexInTable=i;
             }
         }
         Queue.RemoveRange(Content.transform.childCount,Queue.Count-Content.transform.childCount);
@@ -64,6 +68,10 @@ public class OrderTable : MonoBehaviour, IDropHandler
             }
         }
         return res;
+    }
+
+    public void SwapCardByIndex(int a, int b){
+        SwapCard(Queue[a].transform,Queue[b].transform);
     }
 
     public bool ContainPos(RectTransform rectTransform, Vector2 pos){
