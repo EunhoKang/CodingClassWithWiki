@@ -51,7 +51,13 @@ MonoBehaviour:
   - data: 0000000000000000000000000000000003000000
   gridLength: 1
   filePrefabs:
-  - {fileID: 632464085977885834, guid: 06fa97a401d9d674a84e0a67d3c6fce0, type: 3}
-  - {fileID: 8508210379234918455, guid: 5e82e461fd3ab5940952f5242fa41f3b, type: 3}
+  - {fileID: 8129785583337115850, guid: 0f661be145257bc46887d4bccfe50fd1, type: 3}
+  - {fileID: 1604633529056685762, guid: 445a03525b22ef443ad6d33179197e54, type: 3}
   - {fileID: 1811696567171164285, guid: 2f946a881b8e27641ad6a8a97b0bad13, type: 3}
   - {fileID: 8013513872487827858, guid: 900523f83baa78142bd8668ce8dc6c2a, type: 3}
+  - {fileID: 3525575032954288271, guid: f116078904490b94181bc834aba2b139, type: 3}
+  missions:
+  - QueueCount
+  - QueueCount
+  - QueueCount
+  missionTargetCount: 050000000700000009000000

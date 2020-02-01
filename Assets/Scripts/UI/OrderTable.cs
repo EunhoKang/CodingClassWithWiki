@@ -105,6 +105,10 @@ public class OrderTable : MonoBehaviour
         b.SetSiblingIndex(aindex);
         UpdateQueue();
     }
+
+    public void SendQueue(){
+        QueueManager.manager.Init(Queue);
+    }
     /*
     public void MoveContent(){
         Debug.Log(1);

@@ -116,7 +116,7 @@ public class CharacterManager : MonoBehaviour
     //If stage is finished, message that to IngameUI (Yet!)
     public void EndStage(){
         isStageEnd=true;
-        Debug.Log("finish!");
+        StartCoroutine(MapManager.manager.gameUI.StageEnd(true));
     }
     //Reset player's position & rotation
     public void ResetPlace(){

@@ -20,6 +20,7 @@ public class MapManager : MonoBehaviour
     }
     //This is variable for Test ver. Delete this after UI Scene is completed. 
     [HideInInspector]public Mapfile stagefile;
+    [HideInInspector]public IngameUI gameUI;
     public string mapName;
     private Transform mapHolder;
     void Start()
@@ -29,6 +30,7 @@ public class MapManager : MonoBehaviour
 
     void Init(){//추후 csv방식으로 바꿀 것
         stagefile=(Resources.Load(mapName) as GameObject).GetComponent<Mapfile>();
+        MissionManager.manager.Init(stagefile.missions,stagefile.missionTargetCount);
         List<customArray> grid=stagefile.map;
         List<GameObject> array=stagefile.filePrefabs;
         Vector3 pointer=Vector3.zero;
@@ -56,5 +58,9 @@ public class MapManager : MonoBehaviour
         }
 
         //CharacterManager.manager.MapSet(stagefile.GetComponent<Mapfile>().player);
+    }
+
+    public void GetIngameUI(IngameUI ui){
+        gameUI=ui;
     }
 }

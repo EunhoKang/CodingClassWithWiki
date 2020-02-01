@@ -9,8 +9,12 @@ public class IngameUI : MonoBehaviour
     public GameObject Commands;
     public RectTransform spot1;
     public RectTransform spot2;
+    public GameEndUI stageEndLayer;
     List<string> Queue=new List<string>();
     bool commandOpen=false;
+    public void Start(){
+        MapManager.manager.GetIngameUI(this);
+    }
 
     public void SendQueue(){//it will take some time because of GetComponent(Maybe?)
         if(CharacterManager.manager.isMoving){
@@ -23,6 +27,7 @@ public class IngameUI : MonoBehaviour
         CharacterManager.Command reset=ResetQueue;
         CharacterManager.manager.PlayerMove(new List<string>(Queue),reset);
         Queue.Clear();
+        orderTable.SendQueue();
     }
 
     public void ResetQueue(){
@@ -52,5 +57,13 @@ public class IngameUI : MonoBehaviour
             yield return new WaitForSeconds(0.005f);
         }
         isMoving=false;
+    }
+
+    public IEnumerator StageEnd(bool clear){
+        yield return new WaitForSeconds(0.5f);
+        stageEndLayer.gameObject.SetActive(true);
+        stageEndLayer.ChecksPoint();
+        stageEndLayer.PassOrFail(clear);
+        //player dance
     }
 }
