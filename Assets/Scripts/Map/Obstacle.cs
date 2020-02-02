@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EndPoint : MonoBehaviour
+public class Obstacle : MonoBehaviour
 {
-    public void OnTriggerEnter(Collider other) {
+    void OnCollisionEnter(Collision other)
+    {
         if(other.gameObject.CompareTag("Player")){
-            CharacterManager.manager.EndStage(true); 
+            CharacterManager.manager.EndStage(false); 
         }
     }
 }

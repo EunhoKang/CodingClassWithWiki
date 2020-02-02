@@ -12,7 +12,7 @@ public class IngameUI : MonoBehaviour
     public GameEndUI stageEndLayer;
     List<string> Queue=new List<string>();
     bool commandOpen=false;
-    public void Start(){
+    public void OnEnable(){
         MapManager.manager.GetIngameUI(this);
     }
 
@@ -39,7 +39,7 @@ public class IngameUI : MonoBehaviour
     }
 
     private bool isMoving=false;
-    public void BackToLobby(){
+    public void CommandMoves(){
         if(!isMoving){
             if(commandOpen){
                 StartCoroutine(CommandsMove(spot2.position,spot1.position));
@@ -65,5 +65,25 @@ public class IngameUI : MonoBehaviour
         stageEndLayer.ChecksPoint();
         stageEndLayer.PassOrFail(clear);
         //player dance
+    }
+
+    public void BackToMenu(){
+        ResetQueue();
+        if(stageEndLayer.isGameClear){
+            stageEndLayer.gameObject.SetActive(false);
+            MapManager.manager.EndMap();
+            UIManager.uimanager.RemoveCanvas(3);
+            UIManager.uimanager.ShowCanvas(1);
+        }else{
+            stageEndLayer.gameObject.SetActive(false);
+            CharacterManager.manager.ResetGame();
+        }
+    }
+
+    public void BackToMenuBeforeGameEnd(){
+        stageEndLayer.gameObject.SetActive(false);
+        MapManager.manager.EndMap();
+        UIManager.uimanager.RemoveCanvas(3);
+        UIManager.uimanager.ShowCanvas(1);
     }
 }

@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3980290075613356876
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 138479993913494285}
+  - component: {fileID: 815192307606115526}
+  m_Layer: 0
+  m_Name: Map2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &138479993913494285
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3980290075613356876}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.17927516, y: -0.046532717, z: -0.04605494}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &815192307606115526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3980290075613356876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 630c63ab93931744a99ba0d898a38d82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  map:
+  - data: 0200000000000000000000000000000000000000
+  - data: 0100000001000000010000000100000000000000
+  - data: 0000000000000000030000000100000000000000
+  - data: 0000000001000000010000000100000000000000
+  - data: 0000000000000000000000000000000000000000
+  gridLength: 1
+  filePrefabs:
+  - {fileID: 8129785583337115850, guid: 0f661be145257bc46887d4bccfe50fd1, type: 3}
+  - {fileID: 1756411464478750437, guid: ccbfb631ff418ff46aa34d578910ea32, type: 3}
+  - {fileID: 4127800618433631866, guid: d21c9db5e50b2524cb2a0697bdf8e3ce, type: 3}
+  - {fileID: 8013513872487827858, guid: 900523f83baa78142bd8668ce8dc6c2a, type: 3}
+  - {fileID: 3525575032954288271, guid: f116078904490b94181bc834aba2b139, type: 3}
+  missions:
+  - QueueCount
+  - QueueCount
+  - QueueCount
+  missionTargetCount: 080000000c00000010000000

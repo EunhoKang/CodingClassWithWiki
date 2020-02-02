@@ -17,23 +17,25 @@ public class MapManager : MonoBehaviour
             Destroy(this);
         }
         DontDestroyOnLoad(this);
-    }
-    //This is variable for Test ver. Delete this after UI Scene is completed. 
+    } 
     [HideInInspector]public Mapfile stagefile;
     [HideInInspector]public IngameUI gameUI;
-    public string mapName;
+    [HideInInspector]public string mapName;
+    [HideInInspector]public Vector3 mapPos;
+    public Camera mainCam;
     private Transform mapHolder;
-    void Start()
-    {
-        Init();
-    }
+    
 
-    void Init(){//추후 csv방식으로 바꿀 것
+    public void Init(string MapName, Vector3 spawnPoint){//추후 csv방식으로 바꿀 것
+        mapName=MapName;
+        mapPos=spawnPoint;
+        Debug.Log("맵 위치의 중점 : "+mapPos.ToString());
         stagefile=(Resources.Load(mapName) as GameObject).GetComponent<Mapfile>();
         MissionManager.manager.Init(stagefile.missions,stagefile.missionTargetCount);
         List<customArray> grid=stagefile.map;
         List<GameObject> array=stagefile.filePrefabs;
-        Vector3 pointer=Vector3.zero;
+        Vector3 pointer=spawnPoint-new Vector3(((float)grid.Count+1f)/2f,0,((float)grid.Count+1f)/2f);
+        Vector3 initPointer=pointer;
         mapHolder=new GameObject("holder").transform;
         GameObject temp;
         for(int i=-1;i<=grid.Count;i++){
@@ -53,7 +55,7 @@ public class MapManager : MonoBehaviour
                 }
                 pointer+=stagefile.gridLength*Vector3.right;
             }
-            pointer.x=0;
+            pointer.x=initPointer.x;
             pointer+=stagefile.gridLength*Vector3.forward;
         }
 
@@ -62,5 +64,10 @@ public class MapManager : MonoBehaviour
 
     public void GetIngameUI(IngameUI ui){
         gameUI=ui;
+    }
+
+    public void EndMap(){
+        Destroy(mapHolder.gameObject);
+        CharacterManager.manager.ResetGame();
     }
 }

@@ -11,6 +11,7 @@ public class GameEndUI : MonoBehaviour
     public Sprite pass;
     public Sprite fail;
     public Sprite missionChecked;
+    [HideInInspector]public bool isGameClear=false;
 
     public void ChecksPoint(){
         List<bool> tp=MissionManager.manager.AtGameEnd();
@@ -24,10 +25,12 @@ public class GameEndUI : MonoBehaviour
     }
 
     public void PassOrFail(bool clear){
+        isGameClear=clear;
         if(clear){
             PassFail.sprite=pass;
         }else{
             PassFail.sprite=fail;
         }
     }
+
 }

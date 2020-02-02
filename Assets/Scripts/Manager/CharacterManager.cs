@@ -43,19 +43,23 @@ public class CharacterManager : MonoBehaviour
     //Commands. This is actions that character can do
     //Write all commands below here
     void MoveLeft(){
+        direction=3;
         StartCoroutine(MovingCoroutine(player.transform.position+pxPerTile*Vector3.left));
     }
     void MoveRight(){
-
+        direction=1;
         StartCoroutine(MovingCoroutine(player.transform.position+pxPerTile*Vector3.right));
     }
     void MoveUp(){
+        direction=0;
         StartCoroutine(MovingCoroutine(player.transform.position+pxPerTile*Vector3.forward));
     }
     void MoveDown(){
+        direction=2;
         StartCoroutine(MovingCoroutine(player.transform.position+pxPerTile*Vector3.back));
     }
     IEnumerator MovingCoroutine(Vector3 end){
+        player.transform.rotation=Quaternion.Euler(new Vector3(0,90*direction,0));
         for(float i=0; i<=1; i+=0.05f){
             rb.MovePosition(Vector3.Lerp(player.transform.position,end,i));
             yield return moveDelay;
@@ -73,6 +77,7 @@ public class CharacterManager : MonoBehaviour
     [HideInInspector] public Vector3 startingPlace;
     //show whether stage is ended
     bool isStageEnd=true;
+    int direction=0;//0-앞/1-오른쪽/2-뒤/3-왼쪽
     Rigidbody rb;
     WaitForSeconds commandDelay=new WaitForSeconds(0.6f);
     WaitForSeconds moveDelay=new WaitForSeconds(0.015f);
@@ -114,9 +119,9 @@ public class CharacterManager : MonoBehaviour
         }
     }
     //If stage is finished, message that to IngameUI (Yet!)
-    public void EndStage(){
+    public void EndStage(bool clear){
         isStageEnd=true;
-        StartCoroutine(MapManager.manager.gameUI.StageEnd(true));
+        StartCoroutine(MapManager.manager.gameUI.StageEnd(clear));
     }
     //Reset player's position & rotation
     public void ResetPlace(){
@@ -124,5 +129,10 @@ public class CharacterManager : MonoBehaviour
         isMoving=false;
         player.transform.position=startingPlace;
         player.transform.rotation=Quaternion.Euler(Vector3.zero);
+    }
+
+    public void ResetGame(){
+        isStageEnd=false;
+        ResetPlace();
     }
 }
